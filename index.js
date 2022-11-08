@@ -1,7 +1,7 @@
 const express = require('express')
 // const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
@@ -23,6 +23,20 @@ async function run() {
             const query = {};
             const cursor = knowledgeCollection.find(query);
             const result = await cursor.toArray();
+            res.send(result)
+        })
+        
+        app.get('/homeServices', async (req, res) => {
+            const query = {};
+            const cursor = knowledgeCollection.find(query);
+            const result = await cursor.limit(3).toArray();
+            res.send(result)
+          })
+
+          app.get('/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await knowledgeCollection.findOne(query);
             res.send(result)
           })
     }
