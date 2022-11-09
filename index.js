@@ -29,10 +29,19 @@ async function run() {
         
         app.get('/homeServices', async (req, res) => {
             const query = {};
-            const cursor = knowledgeCollection.find(query);
+            const options = {
+                // sort returned documents in ascending order by title (A->Z)
+                sort: { _id: -1 }
+              };
+            const cursor = knowledgeCollection.find(query, options);
             const result = await cursor.limit(3).toArray();
             res.send(result)
-          })
+        })
+        app.post('/homeServices', async (req, res) => {
+            const allService = req.body;
+            const result = await knowledgeCollection.insertOne(allService);
+            res.send(result);
+        })
 
           app.get('/service/:id', async (req, res) => {
             const id = req.params.id;
